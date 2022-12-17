@@ -1,7 +1,17 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:location/location.dart';
+import 'package:rabbitfood/utility/my_constant.dart';
+import 'package:rabbitfood/utility/my_style.dart';
+import 'package:rabbitfood/utility/normal_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddInfomationShop extends StatefulWidget {
   const AddInfomationShop({super.key});
@@ -11,6 +21,42 @@ class AddInfomationShop extends StatefulWidget {
 }
 
 class _AddInfomationShopState extends State<AddInfomationShop> {
+  //field
+  double? lat;
+  double? lng;
+  var file;
+
+  String? nameShop;
+  String? address;
+  String? phone;
+  String? urlImage;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    findLatLng();
+  }
+
+  Future<Null> findLatLng() async {
+    LocationData? locationData = await findLocationData();
+    setState(() {
+      lat = locationData?.latitude;
+      lng = locationData?.longitude;
+    });
+    print('lat = $lat ,lng = $lng');
+  }
+
+  Future<LocationData?> findLocationData() async {
+    Location location = Location();
+    try {
+      return location.getLocation();
+    } catch (e) {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +75,7 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
             SizedBox(height: 15.0),
             groupImage(),
             SizedBox(height: 15.0),
-            showMap(),
+            //lat == null ? MyStyle().showProgress() : showMap(),
             SizedBox(height: 15.0),
             saveButton(),
             SizedBox(height: 20.0),
@@ -40,20 +86,29 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
   }
 
   Container showMap() {
-    LatLng latLng = LatLng(13.819579, 100.045381);
+    LatLng latLng = LatLng(lat!, lng!);
     CameraPosition cameraPosition = CameraPosition(target: latLng, zoom: 14);
 
     return Container(
       height: 300.0,
       width: 380.0,
       child: GoogleMap(
+        markers: myMarKer(),
         initialCameraPosition: cameraPosition,
         mapType: MapType.normal,
-        onMapCreated: (controller) {
-        
-        },
+        onMapCreated: (controller) {},
       ),
     );
+  }
+
+  Set<Marker> myMarKer() {
+    return <Marker>[
+      Marker(
+        markerId: MarkerId('myShop'),
+        position: LatLng(lat!, lng!),
+        infoWindow: InfoWindow(title: 'ร้านของคุณ', snippet: '$lat,$lng'),
+      )
+    ].toSet();
   }
 
   Widget saveButton() {
@@ -61,21 +116,78 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
       height: 50.0,
       width: 370.0,
       child: ElevatedButton.icon(
-        onPressed: (() {
-          
-        }),
-        icon: Icon(Icons.save,size: 36.0,),
-        label: Text('Save Infomation',style: TextStyle(fontSize: 20.0),),
+        onPressed: () {
+          if (nameShop == null || nameShop!.isEmpty || 
+              address == null || address!.isEmpty || 
+              phone == null || phone!.isEmpty) {
+            normalDialog(context, 'กรุณากรอกข้อมูลให้ครบ');
+          } else if(file == null){
+            normalDialog(context, 'กรุณาเพิ่มรูปภาพร้านของคุณ');
+          } else {
+            uploadImage();
+          }
+        },
+        icon: Icon(
+          Icons.save,
+          size: 36.0,
+        ),
+        label: Text(
+          'Save Infomation',
+          style: TextStyle(fontSize: 20.0),
+        ),
       ),
-
-
-
-      // child: ElevatedButton(
-      //   onPressed: () {},
-      //   // icon: Icon(Icons.save,color: Colors.white,),
-      //   // label: Text('Save Infomation',style: TextStyle(color: Colors.white),),
-      // ),
     );
+  }
+
+  Future<Null> uploadImage() async{
+
+    Random random = Random();
+    int i = random.nextInt(1000000);
+    String nameImage = 'shop$i.jpg';
+
+    String url = 'http://192.168.1.107/rabbitfood/saveShop.php';
+
+      Map<String, dynamic> map = Map();
+      map['file'] = await MultipartFile.fromFile(file.path, filename: nameImage);
+
+      FormData formData = FormData.fromMap(map);
+      await Dio().post(url, data: formData).then((value) {
+        print('reponse == $value');
+        //urlImage = '${MyConstant().domain}/rabbitfood/Shop/$nameImage';
+        //print('urlImage === $urlImage');
+        //editUserShop();
+      });
+    } catch (e) {}
+  }
+
+  Future<Null> editUserShop() async {
+    print('hello editUser method');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String id = preferences.getString('id').toString();
+
+    String url ='${MyConstant().domain}/rabbitfood/editUserWhereId.php?isAdd=true&id=$id&NameShop=$nameShop&Address=$address&Phone=$phone&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
+
+    await Dio().get(url).then((value) {
+      if (value.toString() == 'true') {
+        Navigator.pop(context);
+      } else {
+        normalDialog(context, 'ไม่สามารถบันทึกข้อมูลของคุณได้ กรุณาลองใหม่อีกครั้ง');
+      }
+    });
+  }
+
+  Future<Null> chooseImage(ImageSource imageSource) async {
+    try {
+       var object = await ImagePicker().pickImage(
+        source: imageSource,
+        maxHeight: 800.0,
+        maxWidth: 800.0,
+      );
+      final imageTemporary = File(object!.path);
+      setState(() {
+        this.file = imageTemporary;
+      });
+    } catch (e) {}
   }
 
   Row groupImage() {
@@ -84,18 +196,20 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
       children: [
         IconButton(
           icon: Icon(Icons.add_a_photo, size: 36.0),
-          onPressed: () {},
+          onPressed: () => chooseImage(ImageSource.camera),
         ),
         Container(
           width: 200.0,
-          child: Image.asset('images/addimage.png'),
+          child: file == null
+              ? Image.asset('images/addimage.png')
+              : Image.file(file!)
         ),
         IconButton(
           icon: Icon(
             Icons.add_photo_alternate,
             size: 36.0,
           ),
-          onPressed: () {},
+          onPressed: () => chooseImage(ImageSource.gallery),
         )
       ],
     );
@@ -107,7 +221,7 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
           Container(
             width: 250.0,
             child: TextField(
-              //onChanged: (value) => nameShop = value.trim(),
+              onChanged: (value) => nameShop = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ชื่อร้านค้า :',
                 prefixIcon: Icon(Icons.account_box),
@@ -124,7 +238,7 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
           Container(
             width: 250.0,
             child: TextField(
-              //onChanged: (value) => address = value.trim(),
+              onChanged: (value) => address = value.trim(),
               decoration: InputDecoration(
                 labelText: 'ที่อยู่ร้านค้า :',
                 prefixIcon: Icon(Icons.home),
@@ -141,7 +255,7 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
           Container(
             width: 250.0,
             child: TextField(
-              //onChanged: (value) => phone = value.trim(),
+              onChanged: (value) => phone = value.trim(),
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: 'เบอร์โทรศัพท์ร้านค้า :',
