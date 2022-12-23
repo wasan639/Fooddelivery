@@ -8,6 +8,7 @@ import 'package:rabbitfood/model/user_model.dart';
 import 'package:rabbitfood/screens/main_rider.dart';
 import 'package:rabbitfood/screens/main_shop.dart';
 import 'package:rabbitfood/screens/main_user.dart';
+import 'package:rabbitfood/utility/my_constant.dart';
 import 'package:rabbitfood/utility/my_style.dart';
 import 'package:rabbitfood/utility/normal_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,7 +82,7 @@ class _SignInState extends State<SignIn> {
       );
 
   Future<Null> checkAuthen() async {
-    String url ='http://192.168.1.107/rabbitfood/getUser.php?isAdd=true&User=$user';
+    String url ='${MyConstant().domain}/rabbitfood/getUserWhereUser.php?isAdd=true&User=$user';
     print('url ===>> $url');
     
     try {

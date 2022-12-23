@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:rabbitfood/utility/my_style.dart';
 import 'package:rabbitfood/utility/signout_process.dart';
+import 'package:rabbitfood/widget/show_list_shop_all.dart';
+import 'package:rabbitfood/widget/show_status_food_order.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainUser extends StatefulWidget {
@@ -13,9 +14,10 @@ class MainUser extends StatefulWidget {
 }
 
 class _MainUserState extends State<MainUser> {
-
   String? nameUser;
   Widget? currentWidget;
+
+  
 
   @override
   void initState() {
@@ -24,7 +26,7 @@ class _MainUserState extends State<MainUser> {
     findUser();
   }
 
-  Future<Null> findUser() async {
+  Future<void> findUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       nameUser = preferences.getString('Name');
@@ -48,29 +50,69 @@ class _MainUserState extends State<MainUser> {
     );
   }
 
+  Drawer showDrawer() {
+    return Drawer(
+      child: Stack(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              showHead(),
+              menuListShop(),
+              //menuCart(),
+              menuStatusFoodOrder(),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              menuSignOut(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-  Drawer showDrawer() => Drawer(
-        child: Stack(
-          children: <Widget>[
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                showHead(),
-                //menuListShop(),
-                //menuCart(),
-                //menuStatusFoodOrder(),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                menuSignOut(),
-              ],
-            ),
-          ],
-        ),
-      );
+  Widget menuSignOut() {
+    return Container(
+      decoration: BoxDecoration(color: Colors.grey.shade200),
+      child: ListTile(
+        onTap: () => signOutProcess(context),
+        leading: Icon(Icons.exit_to_app),
+        title: Text('Sing Out'),
+        subtitle: Text('Sign Out และ กลับไป หน้าแรก'),
+      ),
+    );
+  }
 
+  ListTile menuListShop() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.pop(context);
+          currentWidget = ShowListShopAll();
+        });
+      },
+      leading: Icon(Icons.home),
+      title: Text('แสดงร้านค้า'),
+      subtitle: Text('แสดงร้านค้าที่สามารถสั่งอาหารได้'),
+    );
+  }
+
+  ListTile menuStatusFoodOrder() {
+    return ListTile(
+      onTap: () {
+        setState(() {
+          Navigator.pop(context);
+          currentWidget = ShowStatusFoodOrder();
+        });
+      },
+      leading: Icon(Icons.restaurant_menu),
+      title: Text('แสดงรายการอาหารที่สั่ง'),
+      subtitle: Text('แสดงรายการอาหารที่สั่งและยังไม่ได้รับ'),
+    );
+  }
 
   UserAccountsDrawerHeader showHead() {
     return UserAccountsDrawerHeader(
@@ -87,26 +129,25 @@ class _MainUserState extends State<MainUser> {
     );
   }
 
-
-  Widget menuSignOut() {
-    return Container(
-      decoration: BoxDecoration(color: Colors.red.shade700),
-      child: ListTile(
-        onTap: () => signOutProcess(context),
-        leading: Icon(
-          Icons.exit_to_app,
-          color: Colors.white,
-        ),
-        title: Text(
-          'Sign Out',
-          style: TextStyle(color: Colors.white),
-        ),
-        subtitle: Text(
-          'การออกจากแอพ',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
+  // Widget menuSignOut() {
+  //   return Container(
+  //     decoration: BoxDecoration(color: Colors.red.shade700),
+  //     child: ListTile(
+  //       onTap: () => signOutProcess(context),
+  //       leading: Icon(
+  //         Icons.exit_to_app,
+  //         color: Colors.white,
+  //       ),
+  //       title: Text(
+  //         'Sign Out',
+  //         style: TextStyle(color: Colors.white),
+  //       ),
+  //       subtitle: Text(
+  //         'การออกจากแอพ',
+  //         style: TextStyle(color: Colors.white),
+  //       ),
+  //     ),
+  //   );
+  // }
 
 }

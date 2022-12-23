@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:rabbitfood/model/food_model.dart';
 
 class MyStyle {
   Color darkColor = Colors.amber.shade800;
   Color primaryColor = Colors.amber;
-
 
   // Widget iconShowCart(BuildContext context) {
   //   return IconButton(
@@ -22,7 +22,7 @@ class MyStyle {
       child: CircularProgressIndicator(),
     );
   }
-  
+
   Widget titleCenter(BuildContext context, String string) {
     return Center(
       child: Container(
@@ -54,7 +54,7 @@ class MyStyle {
           color: Colors.amber.shade800,
           fontWeight: FontWeight.bold,
         ),
-    );
+      );
 
   Container showLogo() {
     return Container(
@@ -72,8 +72,16 @@ class MyStyle {
     );
   }
 
-
-
+  Widget showFoodData(String string, double size) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text('${string}',
+              style: TextStyle(fontSize: size)),
+        ),
+      ],
+    );
+  }
 
   MyStyle();
 }

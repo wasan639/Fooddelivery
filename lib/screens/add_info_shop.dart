@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -12,6 +11,7 @@ import 'package:rabbitfood/utility/my_constant.dart';
 import 'package:rabbitfood/utility/my_style.dart';
 import 'package:rabbitfood/utility/normal_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class AddInfomationShop extends StatefulWidget {
   const AddInfomationShop({super.key});
@@ -24,13 +24,13 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
   //field
   double? lat;
   double? lng;
-  var file;
 
   String? nameShop;
   String? address;
   String? phone;
   String? urlImage;
 
+  File? file;
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
             SizedBox(height: 15.0),
             groupImage(),
             SizedBox(height: 15.0),
-            //lat == null ? MyStyle().showProgress() : showMap(),
+            lat == null ? MyStyle().showProgress() : showMap(),
             SizedBox(height: 15.0),
             saveButton(),
             SizedBox(height: 20.0),
@@ -117,11 +117,14 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
       width: 370.0,
       child: ElevatedButton.icon(
         onPressed: () {
-          if (nameShop == null || nameShop!.isEmpty || 
-              address == null || address!.isEmpty || 
-              phone == null || phone!.isEmpty) {
+          if (nameShop == null ||
+              nameShop!.isEmpty ||
+              address == null ||
+              address!.isEmpty ||
+              phone == null ||
+              phone!.isEmpty) {
             normalDialog(context, 'กรุณากรอกข้อมูลให้ครบ');
-          } else if(file == null){
+          } else if (file == null) {
             normalDialog(context, 'กรุณาเพิ่มรูปภาพร้านของคุณ');
           } else {
             uploadImage();
@@ -139,53 +142,55 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
     );
   }
 
-  Future<Null> uploadImage() async{
-
+  Future uploadImage() async {
     Random random = Random();
     int i = random.nextInt(1000000);
-    String nameImage = 'shop$i.jpg';
+    String nameImage = 'shopimage$i.jpg';
 
-    String url = 'http://192.168.1.107/rabbitfood/saveShop.php';
+    String url = '${MyConstant().domain}/rabbitfood/saveShop.php/';
 
+    try {
       Map<String, dynamic> map = Map();
-      map['file'] = await MultipartFile.fromFile(file.path, filename: nameImage);
+      map['file'] =
+          await MultipartFile.fromFile(file!.path, filename: nameImage);
 
       FormData formData = FormData.fromMap(map);
       await Dio().post(url, data: formData).then((value) {
-        print('reponse == $value');
-        //urlImage = '${MyConstant().domain}/rabbitfood/Shop/$nameImage';
-        //print('urlImage === $urlImage');
-        //editUserShop();
+        print('respose ==> $value');
+        urlImage = '/rabbitfood/Shop/$nameImage';
+        print('urlImage === $urlImage');
+        editUserShop();
       });
     } catch (e) {}
   }
 
-  Future<Null> editUserShop() async {
-    print('hello editUser method');
+  Future editUserShop() async {
+    
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String id = preferences.getString('id').toString();
+    String? id = preferences.getString('id');
 
-    String url ='${MyConstant().domain}/rabbitfood/editUserWhereId.php?isAdd=true&id=$id&NameShop=$nameShop&Address=$address&Phone=$phone&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
+    String url =
+        '${MyConstant().domain}/rabbitfood/editUserWhereId.php?isAdd=true&id=$id&NameShop=$nameShop&Address=$address&Phone=$phone&UrlPicture=$urlImage&Lat=$lat&Lng=$lng';
 
     await Dio().get(url).then((value) {
       if (value.toString() == 'true') {
         Navigator.pop(context);
       } else {
-        normalDialog(context, 'ไม่สามารถบันทึกข้อมูลของคุณได้ กรุณาลองใหม่อีกครั้ง');
+        normalDialog(
+            context, 'ไม่สามารถบันทึกข้อมูลของคุณได้ กรุณาลองใหม่อีกครั้ง');
       }
     });
   }
 
-  Future<Null> chooseImage(ImageSource imageSource) async {
+  Future chooseImage(ImageSource imageSource) async {
     try {
-       var object = await ImagePicker().pickImage(
+      var pickedImage = await ImagePicker().pickImage(
         source: imageSource,
         maxHeight: 800.0,
         maxWidth: 800.0,
       );
-      final imageTemporary = File(object!.path);
       setState(() {
-        this.file = imageTemporary;
+        file = File(pickedImage!.path);
       });
     } catch (e) {}
   }
@@ -196,20 +201,23 @@ class _AddInfomationShopState extends State<AddInfomationShop> {
       children: [
         IconButton(
           icon: Icon(Icons.add_a_photo, size: 36.0),
-          onPressed: () => chooseImage(ImageSource.camera),
+          onPressed: () {
+            chooseImage(ImageSource.camera);
+          },
         ),
         Container(
-          width: 200.0,
-          child: file == null
-              ? Image.asset('images/addimage.png')
-              : Image.file(file!)
-        ),
+            width: 200.0,
+            child: file == null
+                ? Image.asset('images/addimage.png')
+                : Image.file(file!)),
         IconButton(
           icon: Icon(
             Icons.add_photo_alternate,
             size: 36.0,
           ),
-          onPressed: () => chooseImage(ImageSource.gallery),
+          onPressed: () {
+            chooseImage(ImageSource.gallery);
+          },
         )
       ],
     );

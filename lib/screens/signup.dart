@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:rabbitfood/utility/my_constant.dart';
 import 'package:rabbitfood/utility/my_style.dart';
 import 'package:rabbitfood/utility/normal_dialog.dart';
 
@@ -98,7 +99,7 @@ class _SignUpState extends State<SignUp> {
 
   Future<Null> checkUser() async {
     String url =
-        'http://192.168.1.107/rabbitfood/getUser.php?isAdd=true&User=$user';
+        '${MyConstant().domain}/rabbitfood/getUserWhereUser.php?isAdd=true&User=$user';
     try {
       Response response = await Dio().get(url);
       if (response.toString() == 'null') {
@@ -112,7 +113,7 @@ class _SignUpState extends State<SignUp> {
 
   Future<Null> registerThread() async {
     String url =
-        'http://192.168.1.107/rabbitfood/addUser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType';
+        '${MyConstant().domain}/rabbitfood/addUser.php?isAdd=true&Name=$name&User=$user&Password=$password&ChooseType=$chooseType';
 
     try {
       Response response = await Dio().get(url);
@@ -120,6 +121,7 @@ class _SignUpState extends State<SignUp> {
 
       if (response.toString() == 'true') {
         Navigator.pop(context);
+        print('pass');
       } else {
         normalDialog(context, 'ไม่สามารถ สมัครได้ กรุณาลองใหม่ คะ');
       }
