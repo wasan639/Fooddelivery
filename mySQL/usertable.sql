@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2022 at 04:35 PM
+-- Generation Time: Jan 11, 2023 at 08:18 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -32,19 +32,30 @@ CREATE TABLE `usertable` (
   `ChooseType` text NOT NULL,
   `Name` text NOT NULL,
   `User` text NOT NULL,
-  `Password` text NOT NULL
+  `Password` text NOT NULL,
+  `NameShop` text NOT NULL,
+  `Address` text NOT NULL,
+  `Phone` text NOT NULL,
+  `UrlPicture` text NOT NULL,
+  `Lat` text NOT NULL,
+  `Lng` text NOT NULL,
+  `Token` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `usertable`
 --
 
-INSERT INTO `usertable` (`id`, `ChooseType`, `Name`, `User`, `Password`) VALUES
-(1, 'User', 'test', 'user1', '12345'),
-(2, 'User', 'usertest', 'usertest', '12345'),
-(3, 'Shop', 'shoptest', 'shoptest', '12345'),
-(4, 'Rider', 'ridertest', 'ridertest', '12345'),
-(5, 'User', 'tset2', 'user2', '123456');
+INSERT INTO `usertable` (`id`, `ChooseType`, `Name`, `User`, `Password`, `NameShop`, `Address`, `Phone`, `UrlPicture`, `Lat`, `Lng`, `Token`) VALUES
+(2, 'User', 'usertest', 'usertest', '12345', '', '', '', '', '', '', ''),
+(3, 'Shop', 'shoptest', 'shoptest', '12345', '', '', '', '', '', '', ''),
+(4, 'Rider', 'ridertest', 'ridertest', '12345', '', '', '', '', '', '', ''),
+(9, 'User', 'dee', 'dek', '123456', '', '', '', '', '', '', ''),
+(10, 'Shop', 'shoptwo', 'shoptwo', '123456', 'rabbitfood', '60 หมู่3 ต แหลมบัว อ นครชัยศรี จ นครปฐม 73120', '022455855', '/rabbitfood/Shop/shopimage806783.jpg', '13.843267937630888', '100.14997356713364', ''),
+(11, 'Shop', 'rabbitshop', 'rabbitshop', '123456', '', '', '', '', '', '', ''),
+(12, 'Shop', 'ร้านเจ๊แดง', 'testshop2', '123456', 'ร้านเจ๊แดงซอย 8', '88/8 ซอย 8 หมู่ 8', '0880808888', '/rabbitfood/Shop/shopimage579277.jpg', '13.841368856995288', '100.14359549324962', ''),
+(13, 'User', 'rabbitfood', 'rabbittest', '123456', '', '', '', '', '', '', ''),
+(14, 'User', 'sutest', 'sutest01', '123456', '', '', '', '', '', '', '');
 
 --
 -- Indexes for dumped tables
@@ -64,7 +75,7 @@ ALTER TABLE `usertable`
 -- AUTO_INCREMENT for table `usertable`
 --
 ALTER TABLE `usertable`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
