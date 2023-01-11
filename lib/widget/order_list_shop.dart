@@ -17,17 +17,12 @@ class _OrderListShopState extends State<OrderListShop> {
 
   UserModel? userModel;
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
    
   }
-
-
-  
-
 
   @override
   Widget build(BuildContext context) {

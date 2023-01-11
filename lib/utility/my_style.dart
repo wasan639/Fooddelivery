@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rabbitfood/model/food_model.dart';
+import 'package:rabbitfood/screens/show_cart.dart';
 
 class MyStyle {
   Color darkColor = Colors.amber.shade800;
   Color primaryColor = Colors.amber;
 
-  // Widget iconShowCart(BuildContext context) {
-  //   return IconButton(
-  //     icon: Icon(Icons.add_shopping_cart),
-  //     onPressed: () {
-  //       MaterialPageRoute route = MaterialPageRoute(
-  //         builder: (context) => ShowCart(),
-  //       );
-  //       Navigator.push(context, route);
-  //     },
-  //   );
-  // }
-
-  Widget showProgress() {
+  Widget showProgress() {//ให้หน้าแอปหมุนรอการทำงาน
     return Center(
       child: CircularProgressIndicator(),
     );
@@ -55,6 +44,7 @@ class MyStyle {
           fontWeight: FontWeight.bold,
         ),
       );
+  
 
   Container showLogo() {
     return Container(
@@ -63,7 +53,7 @@ class MyStyle {
     );
   }
 
-  BoxDecoration myBoxDecoration(String nameImage) {
+  BoxDecoration myBoxDecoration(String nameImage) {//กำหนดขนาดรูปให้เต็ม
     return BoxDecoration(
       image: DecorationImage(
         image: AssetImage('images/$nameImage'),
@@ -72,7 +62,7 @@ class MyStyle {
     );
   }
 
-  Widget showFoodData(String string, double size) {
+  Widget showFoodData(String string, double size) {//แสดงข้อมูลรายการอาหาร
     return Row(
       children: [
         Expanded(
@@ -81,6 +71,14 @@ class MyStyle {
         ),
       ],
     );
+  }
+
+  Widget iconShowCart(BuildContext context){//แสดงไอคอนรถเข็น
+    return IconButton(onPressed: () {
+      //Navigator.pop(context);
+      MaterialPageRoute route = MaterialPageRoute(builder: (context) => ShowCart(),);
+      Navigator.push(context, route);
+    }, icon: Icon(Icons.add_shopping_cart));
   }
 
   MyStyle();

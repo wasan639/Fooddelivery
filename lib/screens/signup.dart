@@ -48,7 +48,7 @@ class _SignUpState extends State<SignUp> {
           SizedBox(
             height: 15.0,
           ),
-          Center(child: MyStyle().showTitleH2('ชนิดของสมาชิก :')),
+          Center(child: MyStyle().showTitleH2('ประเภทของสมาชิก :')),
           SizedBox(
             height: 15.0,
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<void> normalDialog(BuildContext context, String message) async {
+Future<void> normalDialog(BuildContext context, String message) async {//โชว์แจ้งเตือนการทำงานต่างๆ
   showDialog(
     context: context,
     builder: (context) => SimpleDialog(

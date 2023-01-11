@@ -15,9 +15,7 @@ class MainShop extends StatefulWidget {
 }
 
 class _MainShopState extends State<MainShop> {
-
   Widget currentWidget = OrderListShop();
-
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +34,24 @@ class _MainShopState extends State<MainShop> {
     );
   }
 
-
   Drawer showDrawer() => Drawer(
-        child: ListView(
-          children: <Widget>[
-            showHead(),
-            homeMenu(),
-            foodMenu(),
-            infomationMenu(),
-            signOutMenu(),
+        child: Stack(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                showHead(),
+                homeMenu(),
+                foodMenu(),
+                infomationMenu(),
+              ],
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                signOutMenu(),
+              ],
+            ),
           ],
         ),
       );
@@ -85,7 +92,6 @@ class _MainShopState extends State<MainShop> {
         },
       );
 
-
   ListTile signOutMenu() => ListTile(
         leading: Icon(Icons.exit_to_app),
         title: Text('Sign Out'),
@@ -97,9 +103,14 @@ class _MainShopState extends State<MainShop> {
     return UserAccountsDrawerHeader(
       decoration: MyStyle().myBoxDecoration('shop.jpg'),
       currentAccountPicture: MyStyle().showLogo(),
-      accountName: Text('Name Shop',style: TextStyle(color: Colors.white),),
-      accountEmail: Text('Login',style: TextStyle(color: Colors.white),),
+      accountName: Text(
+        'Name Shop',
+        style: TextStyle(color: Colors.white),
+      ),
+      accountEmail: Text(
+        'Login',
+        style: TextStyle(color: Colors.white),
+      ),
     );
   }
-
 }

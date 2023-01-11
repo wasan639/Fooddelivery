@@ -20,13 +20,10 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
-		$Name = $_GET['Name'];
-		$User = $_GET['User'];
-		$Password = $_GET['Password'];
-		$ChooseType = $_GET['ChooseType'];
+		$id = $_GET['id'];
 		
 							
-		$sql = "INSERT INTO `usertable`(`id`, `ChooseType`, `Name`, `User`, `Password`, `NameShop`, `Address`, `Phone`, `UrlPicture`, `Lat`, `Lng`, `Token`) VALUES (Null,'$ChooseType','$Name','$User','$Password','','','','','','','')";
+		$sql = "DELETE FROM `foodtable` WHERE id = '$id'";
 
 		$result = mysqli_query($link, $sql);
 

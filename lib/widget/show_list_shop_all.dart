@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:rabbitfood/model/food_model.dart';
 import 'package:rabbitfood/model/user_model.dart';
 import 'package:rabbitfood/screens/show_shop_food_menu.dart';
 import 'package:rabbitfood/utility/my_constant.dart';
@@ -39,7 +40,7 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
         UserModel model = UserModel.fromJson(map);
 
         String nameShop = model.nameShop.toString();
-        if (nameShop.isNotEmpty) {
+        if (nameShop.isNotEmpty ) {//เกิดบัคตรงนี้
           print('${model.nameShop}');
           setState(() {
             userModels.add(model);
@@ -69,7 +70,7 @@ class _ShowListShopAllState extends State<ShowListShopAll> {
         print('you click index $index');
         MaterialPageRoute route = MaterialPageRoute(
             builder: (context) =>
-                ShowShopFoodMenu(usermodel: userModels[index]));
+                ShowShopFoodMenu(userModel: userModel));
         Navigator.push(context, route);
       },
       child: Card(

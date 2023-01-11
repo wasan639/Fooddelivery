@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:rabbitfood/screens/show_cart.dart';
 import 'package:rabbitfood/utility/my_style.dart';
 import 'package:rabbitfood/utility/signout_process.dart';
 import 'package:rabbitfood/widget/show_list_shop_all.dart';
@@ -39,10 +40,11 @@ class _MainUserState extends State<MainUser> {
       appBar: AppBar(
         title: Text(nameUser == null ? 'Main User' : '$nameUser login'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () => signOutProcess(context),
-          )
+          MyStyle().iconShowCart(context),
+          // IconButton(
+          //   icon: Icon(Icons.exit_to_app),
+          //   onPressed: () => signOutProcess(context),
+          // )
         ],
       ),
       drawer: showDrawer(),
@@ -59,7 +61,7 @@ class _MainUserState extends State<MainUser> {
             children: [
               showHead(),
               menuListShop(),
-              //menuCart(),
+              menuCart(),
               menuStatusFoodOrder(),
             ],
           ),
@@ -128,26 +130,17 @@ class _MainUserState extends State<MainUser> {
       ),
     );
   }
-
-  // Widget menuSignOut() {
-  //   return Container(
-  //     decoration: BoxDecoration(color: Colors.red.shade700),
-  //     child: ListTile(
-  //       onTap: () => signOutProcess(context),
-  //       leading: Icon(
-  //         Icons.exit_to_app,
-  //         color: Colors.white,
-  //       ),
-  //       title: Text(
-  //         'Sign Out',
-  //         style: TextStyle(color: Colors.white),
-  //       ),
-  //       subtitle: Text(
-  //         'การออกจากแอพ',
-  //         style: TextStyle(color: Colors.white),
-  //       ),
-  //     ),
-  //   );
-  // }
+  
+  Widget menuCart() {
+    return ListTile(
+      onTap: () {
+        MaterialPageRoute route = MaterialPageRoute(builder: (context) => ShowCart());
+        Navigator.push(context, route);
+      },
+      leading: Icon(Icons.add_shopping_cart),
+      title: Text('ตะกร้าของฉัน'),
+      subtitle: Text('รายการอาหารที่ยังไม่ได้ทำการสั่งซื้อ'),
+    );
+  }
 
 }

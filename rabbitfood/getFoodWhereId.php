@@ -20,24 +20,26 @@ if (!$link->set_charset("utf8")) {
 if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
-		$Name = $_GET['Name'];
-		$User = $_GET['User'];
-		$Password = $_GET['Password'];
-		$ChooseType = $_GET['ChooseType'];
-		
-							
-		$sql = "INSERT INTO `usertable`(`id`, `ChooseType`, `Name`, `User`, `Password`, `NameShop`, `Address`, `Phone`, `UrlPicture`, `Lat`, `Lng`, `Token`) VALUES (Null,'$ChooseType','$Name','$User','$Password','','','','','','','')";
+		$idShop = $_GET['idShop'];
 
-		$result = mysqli_query($link, $sql);
+		$result = mysqli_query($link, "SELECT * FROM foodtable WHERE idShop = '$idShop'");
+		
 
 		if ($result) {
-			echo "true";
-		} else {
-			echo "false";
-		}
 
-	} else echo "Welcome Rabbit Food";
+			while($row=mysqli_fetch_assoc($result)){
+			$output[]=$row;
+
+			}	// while
+
+			echo json_encode($output);
+
+		} //if
+
+	} else echo "Welcome Rabbit Food";	// if2
    
-}
+}	// if1
+
+
 	mysqli_close($link);
 ?>
