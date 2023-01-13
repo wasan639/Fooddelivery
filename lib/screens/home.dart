@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -18,8 +19,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -27,9 +26,9 @@ class _HomeState extends State<Home> {
     checkPreferance();
   }
 
-
   Future<Null> checkPreferance() async {
     try {
+
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String chooseType = preferences.getString('ChooseType').toString();
       //String idLogin = preferences.getString('id');
@@ -42,14 +41,13 @@ class _HomeState extends State<Home> {
           routeToService(MainShop());
         } else if (chooseType == 'Rider') {
           routeToService(MainRider());
-        } 
+        }
         // else {
         //   normalDialog(context, 'Error User Type');
         // }
       }
     } catch (e) {}
   }
-
 
   void routeToService(Widget myWidget) {
     MaterialPageRoute route = MaterialPageRoute(builder: (context) => myWidget);
@@ -64,7 +62,6 @@ class _HomeState extends State<Home> {
     );
   }
 
-
   Drawer showDrawer() => Drawer(
         child: ListView(
           children: <Widget>[
@@ -74,7 +71,6 @@ class _HomeState extends State<Home> {
           ],
         ),
       );
-
 
   ListTile signInMenu() {
     return ListTile(
@@ -88,7 +84,6 @@ class _HomeState extends State<Home> {
       },
     );
   }
-
 
   ListTile signUpMenu() {
     return ListTile(
@@ -107,9 +102,8 @@ class _HomeState extends State<Home> {
     return UserAccountsDrawerHeader(
       decoration: MyStyle().myBoxDecoration('guestuser.jpg'),
       currentAccountPicture: MyStyle().showLogo(),
-      accountName: Text('Guest',style: TextStyle(color: Colors.white)),
-      accountEmail: Text('Please Login',style: TextStyle(color: Colors.white)),
+      accountName: Text('Guest', style: TextStyle(color: Colors.white)),
+      accountEmail: Text('Please Login', style: TextStyle(color: Colors.white)),
     );
   }
-
 }
