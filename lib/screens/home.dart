@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -24,10 +25,27 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     checkPreferance();
+    getToken();
+  }
+
+  void getToken() async {
+    var token ;
+    await FirebaseMessaging.instance.getToken().then((value) 
+    {
+      setState(() {
+        token = value;
+        print('this is my token ==> ${token.toString()}');
+      });
+    }
+    );
   }
 
   Future<Null> checkPreferance() async {
     try {
+      // initializeApp()
+      // await Firebase.initializeApp();
+      // FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance.getToken();
+      
 
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String chooseType = preferences.getString('ChooseType').toString();
